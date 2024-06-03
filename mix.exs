@@ -29,8 +29,8 @@ defmodule SoggyWaffle.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.6"},
-      {:jason, "~> 1.1"},
+      {:httpoison, "~> 1.6.2"},
+      {:jason, "~> 1.1.2"},
       # test only
       {:exvcr, "~> 0.11.0", only: [:test]}
     ]
