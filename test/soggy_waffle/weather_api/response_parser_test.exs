@@ -46,7 +46,8 @@ defmodule SoggyWaffle.WeatherApi.ResponseParserTest do
           assert {:ok, [weather_struct]} =
                    ResponseParser.parse_response(%{"list" => [record]})
 
-          assert weather_struct.rain? == true
+          assert weather_struct.rain? == true,
+                 "Expected weather id (#{id}) to be a rain condition"
         end
       end
     end
