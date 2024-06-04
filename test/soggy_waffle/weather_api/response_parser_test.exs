@@ -85,5 +85,22 @@ defmodule SoggyWaffle.WeatherApi.ResponseParserTest do
       assert {:error, :response_format_invalid} =
                ResponseParser.parse_response(almost_correct_response)
     end
+
+    test "error: returns error if timestamp is missing" do
+      malformed_day = %{
+        # wrong key
+        "datetime" => 1_574_359_200,
+        "weather" => [
+          %{
+            "main" => 1
+          }
+        ]
+      }
+
+      almost_correct_response = %{"list" => [malformed_day]}
+
+      assert {:error, :response_format_invalid} =
+               ResponseParser.parse_response(almost_correct_response)
+    end
   end
 end
