@@ -51,5 +51,39 @@ defmodule SoggyWaffle.WeatherApi.ResponseParserTest do
         end
       end
     end
+
+    test "success: returns rain?: false for any other id codes" do
+      {_, thunderstorm_ids} = @thunderstorm_ids
+      {_, drizzle_ids} = @drizzle_ids
+      {_, rain_ids} = @rain_ids
+      all_rain_ids = thunderstorm_ids ++ drizzle_ids ++ rain_ids
+      now_unix = DateTime.utc_now() |> DateTime.to_unix()
+
+      for id <- 100..900, id not in all_rain_ids do
+        record = %{"dt" => now_unix, "weather" => [%{"id" => id}]}
+
+        assert {:ok, [weather_struct]} =
+                 ResponseParser.parse_response(%{"list" => [record]})
+
+        assert weather_struct.rain? == false,
+               "Expected weather id (#{id}) to NOT be a rain condition"
+      end
+    end
+
+    test "error: returns error if weather data is malformed" do
+      malformed_day = %{
+        "dt" => 1_574_359_200,
+        "weather" => [
+          %{
+            "wrong_key" => 1
+          }
+        ]
+      }
+
+      almost_correct_response = %{"list" => [malformed_day]}
+
+      assert {:error, :response_format_invalid} =
+               ResponseParser.parse_response(almost_correct_response)
+    end
   end
 end
